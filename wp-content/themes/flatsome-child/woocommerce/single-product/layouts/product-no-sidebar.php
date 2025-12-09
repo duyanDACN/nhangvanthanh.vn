@@ -11,7 +11,7 @@
 <script src="https://cdn.tailwindcss.com?plugins=forms,typography"></script>
 <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Outlined" rel="stylesheet" />
 <script>
-const ajax_nonce = "<?php echo wp_create_nonce('custom_add_to_cart_nonce'); ?>";
+	const ajax_nonce = "<?php echo wp_create_nonce('custom_add_to_cart_nonce'); ?>";
 </script>
 <link rel='stylesheet' href='<?php echo get_home_url(); ?>/wp-content/themes/flatsome-child/assets/css/chi-tiet-san-pham.css'>
 <script>
@@ -271,65 +271,65 @@ const ajax_nonce = "<?php echo wp_create_nonce('custom_add_to_cart_nonce'); ?>";
 	});
 
 
-document.addEventListener('DOMContentLoaded', function() {
-	const addToCartBtn = document.getElementById('custom-add-to-cart');
+	document.addEventListener('DOMContentLoaded', function() {
+		const addToCartBtn = document.getElementById('custom-add-to-cart');
 
-	addToCartBtn.addEventListener('click', function() {
+		addToCartBtn.addEventListener('click', function() {
 
-		const productId = this.dataset.productId;
-		const variationId = document.getElementById('variation_id')?.value || '';
-		const quantity = 1;
+			const productId = this.dataset.productId;
+			const variationId = document.getElementById('variation_id')?.value || '';
+			const quantity = 1;
 
-		const spinner = this.querySelector('.spinner');
-		const btnText = this.querySelector('.btn-text');
+			const spinner = this.querySelector('.spinner');
+			const btnText = this.querySelector('.btn-text');
 
-		// Loading
-		spinner.classList.remove('hidden');
-		btnText.classList.add('hidden');
-		this.disabled = true;
+			// Loading
+			spinner.classList.remove('hidden');
+			btnText.classList.add('hidden');
+			this.disabled = true;
 
-		// dữ liệu gửi lên PHP
-		const formData = new FormData();
-		formData.append('action', 'custom_add_to_cart');
-		formData.append('product_id', productId);
-		formData.append('quantity', quantity);
-		formData.append('_ajax_nonce', ajax_nonce);
-		if (variationId) formData.append('variation_id', variationId);
+			// dữ liệu gửi lên PHP
+			const formData = new FormData();
+			formData.append('action', 'custom_add_to_cart');
+			formData.append('product_id', productId);
+			formData.append('quantity', quantity);
+			formData.append('_ajax_nonce', ajax_nonce);
+			if (variationId) formData.append('variation_id', variationId);
 
-		// gọi AJAX WordPress
-		fetch("<?php echo admin_url('admin-ajax.php'); ?>", {
-			method: "POST",
-			body: formData,
-			credentials: "same-origin",
-			headers: {
-				"X-Requested-With": "XMLHttpRequest"
-			}
-		})
-			.then(response => response.text())
-			.then(text => {
+			// gọi AJAX WordPress
+			fetch("<?php echo admin_url('admin-ajax.php'); ?>", {
+					method: "POST",
+					body: formData,
+					credentials: "same-origin",
+					headers: {
+						"X-Requested-With": "XMLHttpRequest"
+					}
+				})
+				.then(response => response.text())
+				.then(text => {
 
-				console.log("AJAX RESPONSE:", text);
+					console.log("AJAX RESPONSE:", text);
 
-				let data = {};
-				try {
-					data = JSON.parse(text);
-				} catch (e) {
-					console.error("JSON parse error:", e);
-				}
+					let data = {};
+					try {
+						data = JSON.parse(text);
+					} catch (e) {
+						console.error("JSON parse error:", e);
+					}
 
-				if (data.success) {
-					window.location.href = "<?php echo wc_get_checkout_url(); ?>";
-				}
-			})
-			.catch(err => console.error(err))
-			.finally(() => {
-				// reset UI
-				spinner.classList.add('hidden');
-				btnText.classList.remove('hidden');
-				addToCartBtn.disabled = false;
-			});
+					if (data.success) {
+						window.location.href = "<?php echo wc_get_checkout_url(); ?>";
+					}
+				})
+				.catch(err => console.error(err))
+				.finally(() => {
+					// reset UI
+					spinner.classList.add('hidden');
+					btnText.classList.remove('hidden');
+					addToCartBtn.disabled = false;
+				});
+		});
 	});
-});
 
 
 	function updateMiniCart() {
