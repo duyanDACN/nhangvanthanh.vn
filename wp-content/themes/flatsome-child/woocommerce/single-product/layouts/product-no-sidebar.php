@@ -96,6 +96,23 @@
 								<input type="hidden" name="variation_id" id="variation_id" value="">
 							<?php endif; ?>
 							<div class="product-price text-3xl font-bold text-red-600 mb-6"></div>
+							<div class="mb-4 choose-quality">
+								<label for="custom_quantity" class="block text-sm font-medium text-sl">Số lượng</label>
+
+								<div class="flex items-center">
+									<button type="button" id="qty_minus" class="qty-btn">-</button>
+
+									<input
+										type="number"
+										id="custom_quantity"
+										value="1"
+										min="1"
+										class="">
+
+									<button type="button" id="qty_plus" class="qty-btn">+</button>
+								</div>
+							</div>
+
 							<div class="flex flex-col sm:flex-row gap-3 mb-4">
 								<button id="custom-add-to-cart"
 									data-product-id="<?php echo get_the_ID(); ?>"
@@ -141,7 +158,7 @@
 											<p class="text-sm text-primary font-medium">
 												<?php echo $gift ? $gift->get_name() : ''; ?>
 											</p>
-											<p class="text-xs text-text-secondary-light dark:text-text-secondary-dark mt-1">Lưu ý: Quà có thể hết trước ngày kết thúc chương trình (31/12)</p>
+											<p class="text-xs text-text-secondary-light dark:text-text-secondary-dark mt-1">Lưu ý: Chỉ áp dụng cho tổng tiền khi mua sản phẩm này</p>
 										</div>
 									</div>
 								</div>
@@ -228,6 +245,25 @@
 
 <script>
 	document.addEventListener('DOMContentLoaded', function() {
+		const qtyInput = document.getElementById('custom_quantity');
+		const btnMinus = document.getElementById('qty_minus');
+		const btnPlus = document.getElementById('qty_plus');
+
+		if (btnMinus && btnPlus && qtyInput) {
+			btnMinus.addEventListener('click', () => {
+				let val = parseInt(qtyInput.value);
+				if (val > 1) {
+					qtyInput.value = val - 1;
+					qtyInput.dispatchEvent(new Event('input'));
+				}
+			});
+
+			btnPlus.addEventListener('click', () => {
+				let val = parseInt(qtyInput.value);
+				qtyInput.value = val + 1;
+				qtyInput.dispatchEvent(new Event('input'));
+			});
+		}
 		const variationBtns = document.querySelectorAll('.variation-btn');
 		const mainImage = document.querySelector('.main-product-image');
 		const variationIdInput = document.getElementById('variation_id');
@@ -262,7 +298,21 @@
 			if (mainImage && btn.dataset.image) mainImage.src = btn.dataset.image;
 
 			// đổi giá
-			if (priceTag && btn.dataset.price) priceTag.textContent = formatPrice(btn.dataset.price);
+			if (priceTag && btn.dataset.price) {
+				const qty = document.getElementById('custom_quantity')?.value || 1;
+				priceTag.textContent = formatPrice(btn.dataset.price * qty);
+			}
+		}
+
+
+		if (qtyInput) {
+			qtyInput.addEventListener('input', function() {
+				const activeBtn = document.querySelector('.variation-btn.border-primary');
+				if (activeBtn) {
+					const price = activeBtn.dataset.price;
+					priceTag.textContent = formatPrice(price * this.value);
+				}
+			});
 		}
 
 		function formatPrice(value) {
@@ -278,7 +328,7 @@
 
 			const productId = this.dataset.productId;
 			const variationId = document.getElementById('variation_id')?.value || '';
-			const quantity = 1;
+			const quantity = document.getElementById('custom_quantity')?.value || 1;
 
 			const spinner = this.querySelector('.spinner');
 			const btnText = this.querySelector('.btn-text');
@@ -383,30 +433,30 @@
 	});
 
 
-	document.addEventListener("DOMContentLoaded", function() {
+document.addEventListener("DOMContentLoaded", function() {
 
-		const openBtn = document.querySelector('.open-cf7-popup');
-		const popup = document.getElementById('cf7-popup');
-		const closeBtn = document.querySelector('.close-cf7');
+    const openBtn = document.querySelector('.open-cf7-popup picture'); 
+    const popup = document.getElementById('cf7-popup');
+    const closeBtn = document.querySelector('.close-cf7');
 
-		if (!openBtn || !popup) return;
+    if (!openBtn || !popup) return;
 
-		openBtn.addEventListener("click", function() {
-			popup.style.display = "flex";
-			document.body.style.overflow = "hidden";
-		});
+    openBtn.addEventListener("click", function() {
+        popup.style.display = "flex";
+        document.body.style.overflow = "hidden";
+    });
 
-		closeBtn.addEventListener("click", function() {
-			popup.style.display = "none";
-			document.body.style.overflow = "";
-		});
+    closeBtn.addEventListener("click", function() {
+        popup.style.display = "none";
+        document.body.style.overflow = "";
+    });
 
-		popup.addEventListener("click", function(e) {
-			if (e.target === popup) {
-				popup.style.display = "none";
-				document.body.style.overflow = "";
-			}
-		});
+    popup.addEventListener("click", function(e) {
+        if (e.target === popup) {
+            popup.style.display = "none";
+            document.body.style.overflow = "";
+        }
+    });
 
-	});
+});
 </script>

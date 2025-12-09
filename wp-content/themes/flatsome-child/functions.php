@@ -871,7 +871,8 @@ add_action('wp_ajax_nopriv_get_cart_totals', 'get_cart_totals_ajax');
 add_action('wp_ajax_custom_add_to_cart', 'custom_add_to_cart');
 add_action('wp_ajax_nopriv_custom_add_to_cart', 'custom_add_to_cart');
 
-function custom_add_to_cart() {
+function custom_add_to_cart()
+{
 
     check_ajax_referer('custom_add_to_cart_nonce'); // BẮT BUỘC
 
@@ -886,6 +887,53 @@ function custom_add_to_cart() {
     }
 
     if ($added) {
+        // ======================
+        // XỬ LÝ KHUYẾN MÃI
+        // ======================
+        $money_min = get_field('money_min', $product_id);
+        $gift_id   = get_field('product_gift', $product_id);
+
+        if ($money_min && $gift_id) {
+
+            $total_price_this_product = 0;
+
+            foreach (WC()->cart->get_cart() as $item_key => $item) {
+                if ($item['product_id'] == $product_id) {
+                    $total_price_this_product += floatval($item['line_total']);
+                }
+            }
+
+            if ($total_price_this_product >= $money_min) {
+
+                $gift_exists = false;
+
+                foreach (WC()->cart->get_cart() as $item) {
+                    if ($item['product_id'] == $gift_id) {
+                        $gift_exists = true;
+                    }
+                }
+
+                if (!$gift_exists) {
+                    WC()->cart->add_to_cart(
+                        $gift_id,
+                        1,
+                        0,
+                        [],
+                        [
+                            'is_gift' => true,
+                            'gift_note' => 'Khuyến mãi theo sản phẩm'
+                        ]
+                    );
+                }
+            } else {
+                // KHÔNG đủ thì remove quà
+                foreach (WC()->cart->get_cart() as $item_key => $item) {
+                    if ($item['product_id'] == $gift_id) {
+                        WC()->cart->remove_cart_item($item_key);
+                    }
+                }
+            }
+        }
         wp_send_json_success();
     } else {
         wp_send_json_error();
@@ -893,6 +941,29 @@ function custom_add_to_cart() {
 
     wp_die();
 }
+
+
+add_action('woocommerce_before_calculate_totals', function($cart){
+    if (is_admin() && !defined('DOING_AJAX')) return;
+
+    foreach ($cart->get_cart() as $key => $item) {
+
+        if(isset($item['is_gift'])){
+            $item['data']->set_price(0);
+        }
+    }
+});
+
+
+add_filter('woocommerce_get_item_data', function($data, $item){
+    if(isset($item['gift_note'])){
+        $data[] = [
+            'name' => 'Khuyến mãi',
+            'value' => $item['gift_note']
+        ];
+    }
+    return $data;
+}, 10, 2);
 
 // SAVE JSON
 function my_acf_json_save_point( $path ) {

@@ -12,7 +12,7 @@
 }
 
 .product-thumbnails {
-    margin-top: 60px;
+    margin-top: 30px;
 }
 
 .product-images a img {
@@ -25,7 +25,7 @@
 
 
 .product-tabs_detail {
-    max-height: 300px;
+    max-height: 200px;
     /* bạn chỉnh tùy ý */
     overflow: hidden;
     position: relative;
@@ -147,6 +147,60 @@ body.dark .product-tabs_detail::after {
     padding-bottom: 10px;
 }
 
+.qty-btn {
+	background: #f3f4f6;
+	border: 1px solid #d1d5db;
+	min-width: 38px;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	font-size: 14px;
+	font-weight: bold;
+	cursor: pointer;
+	transition: 0.2s;
+	user-select: none;
+}
+
+.qty-btn:hover {
+	background: #e5e7eb;
+	border-color: #9ca3af;
+}
+
+.qty-btn:active {
+	background: #d1d5db;
+	transform: scale(0.95);
+}
+
+#qty_plus {
+    border-bottom-right-radius: 8px;
+    border-top-right-radius: 8px;
+}
+
+#qty_minus {
+    border-top-left-radius: 8px;
+    border-bottom-left-radius: 8px;
+}
+
+#custom_quantity {
+	height: 35px;
+	border: 1px solid #d1d5db;
+	text-align: center;
+	font-size: 16px;
+	width: 60px;
+    border-left: none;
+    border-right: none;
+}
+
+.text-sl {
+    margin-bottom: 0;
+}
+
+.choose-quality {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+}
+
 @keyframes zoomIn {
     from {
         transform: scale(.8);
@@ -191,7 +245,7 @@ body.dark .product-tabs_detail::after {
     }
 
     .product-thumbnails {
-        margin-top: 95px;
+        margin-top: 25px;
     }
 
     .product-tabs_detail .woocommerce-tabs {
@@ -225,6 +279,10 @@ body.dark .product-tabs_detail::after {
 
     .info-giao-hang {
         margin-bottom: 0;
+    }
+
+    .woocommerce-product-gallery__wrapper {
+        height: 380px;
     }
 
 
