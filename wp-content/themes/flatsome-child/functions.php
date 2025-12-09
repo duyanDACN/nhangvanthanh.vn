@@ -965,6 +965,19 @@ add_filter('woocommerce_get_item_data', function($data, $item){
     return $data;
 }, 10, 2);
 
+add_action('woocommerce_checkout_create_order', function($order, $data){
+    if(isset($_POST['shipping_speed'])){
+        $order->update_meta_data('_shipping_speed', sanitize_text_field($_POST['shipping_speed']));
+    }
+}, 10, 2);
+
+add_action( 'woocommerce_admin_order_data_after_shipping_address', function( $order ){
+    $value = $order->get_meta('_shipping_speed');
+    if($value){
+        echo '<p><strong>Hình thức giao hàng:</strong> '.$value.'</p>';
+    }
+});
+
 // SAVE JSON
 function my_acf_json_save_point( $path ) {
 

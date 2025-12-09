@@ -670,7 +670,6 @@ th {
 }
 
 .giao-hang {
-    display: flex;
     gap: 10px;
     padding: 20px;
     background: rgb(245 246 247);
@@ -724,6 +723,35 @@ th {
     width: 48% !important;
     float: right !important;
     clear: none !important;
+}
+.shipping-custom-box{
+    background:#fff;
+    border:1px solid #eee;
+    border-radius:10px;
+    padding:15px;
+    display:flex;
+    flex-direction:column;
+}
+
+.ship-option{
+    display:flex;
+    align-items:flex-start;
+    gap:10px;
+    cursor:pointer;
+}
+
+.ship-option input{
+    margin-top:3px;
+}
+
+.ship-title{
+    font-weight:600;
+    margin-right:10px;
+}
+
+.ship-desc{
+    font-size:13px;
+    color:#888;
 }
 /* Form */
 @media (max-width: 768px) {

@@ -45,6 +45,11 @@ if (isset($_GET['key']) && is_wc_endpoint_url('order-received')) {
                                 <img class="product-image" alt="<?php echo esc_attr($_product->get_name()); ?>" src="<?php echo esc_url(wp_get_attachment_image_url($_product->get_image_id(), 'full')); ?>">
                                 <div class="product-meta">
                                     <div class="product-name"><?php echo esc_html($_product->get_name()); ?></div>
+                                    <?php if (isset($cart_item['is_gift'])) : ?>
+                                        <div class="product-gift-note" style="color:#008000;font-size:12px;margin-top:4px;">
+                                            <?php echo isset($cart_item['gift_note']) ? esc_html($cart_item['gift_note']) : 'Sản phẩm khuyến mãi'; ?>
+                                        </div>
+                                    <?php endif; ?>
                                     <div class="info-product-mb">
                                         <div class="product-price product-price-mb">
                                             <div class="price-current"><?php echo wc_price($_product->get_price()); ?></div>
@@ -88,29 +93,21 @@ if (isset($_GET['key']) && is_wc_endpoint_url('order-received')) {
                     </div>
                 </div>
                 <div class="giao-hang">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="20px" height="20px" viewBox="0 0 24 24" fill="none">
-                        <g id="SVGRepo_bgCarrier" stroke-width="0" />
-                        <g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round" />
-                        <g id="SVGRepo_iconCarrier">
-                            <path d="M21 12C21 16.9706 16.9706 21 12 21C7.02944 21 3 16.9706 3 12C3 7.02944 7.02944 3 12 3C16.9706 3 21 7.02944 21 12Z" stroke="#a44f30" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
-                        </g>
-                    </svg> <span class="du-kien-time">
-                        <div>Giao nhanh toàn quốc</div>
-                        <div class="time-gh"><span><svg xmlns="http://www.w3.org/2000/svg" width="10px" height="10px" viewBox="0 -2 20.012 20.012" fill="#000000">
-                                    <g id="SVGRepo_bgCarrier" stroke-width="0" />
-                                    <g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round" />
-                                    <g id="SVGRepo_iconCarrier">
-                                        <g id="bus-left-2" transform="translate(-1.988 -3.997)">
-                                            <path id="secondary" fill="#008000 " d="M3,11H21v5a1,1,0,0,1-1,1H19a2,2,0,0,0-4,0H9a2,2,0,0,0-4,0H4a1,1,0,0,1-1-1V11Z" />
-                                            <path id="primary" d="M4.9,17H4a1,1,0,0,1-1-1V11.16a1.06,1.06,0,0,1,0-.31L4.77,5.68a1,1,0,0,1,1-.68H20a1,1,0,0,1,1,1V16a1,1,0,0,1-1,1h-.93" fill="none" stroke="#008000 " stroke-linecap="round" stroke-linejoin="round" stroke-width="2" />
-                                            <path id="primary-2" data-name="primary" d="M14.88,17H9.06M21,11H3.08M9,11V5m6,12a2,2,0,1,0,2-2A2,2,0,0,0,15,17ZM5,17a2,2,0,1,0,2-2A2,2,0,0,0,5,17Z" fill="none" stroke="#008000 " stroke-linecap="round" stroke-linejoin="round" stroke-width="2" />
-                                        </g>
-                                    </g>
-                                </svg><?php
-                                        $delivery_date = date('d/m', strtotime('+2 days'));
-                                        ?>
-                            </span> Dự kiến giao hàng trong ngày <?php echo $delivery_date; ?></div>
-                    </span>
+                    <div class="shipping-custom-box">
+
+                        <label class="ship-option">
+                            <input type="radio" name="shipping_speed" value="Giao nhanh toàn quốc" checked>
+                            <span class="ship-title">🚚 Giao nhanh toàn quốc</span>
+                            <span class="ship-desc">Dự kiến 2-3 ngày</span>
+                        </label>
+
+                        <label class="ship-option">
+                            <input type="radio" name="shipping_speed" value="Giao hoả tốc 4h">
+                            <span class="ship-title">⚡ Hoả tốc 4h</span>
+                            <span class="ship-desc">Chỉ áp dụng TP.HCM (Người nhận trả phí)</span>
+                        </label>
+
+                    </div>
                 </div>
                 <div class="shipping-body">
                     <div class="woocommerce-shipping-totals shipping">
@@ -269,7 +266,7 @@ if (isset($_GET['key']) && is_wc_endpoint_url('order-received')) {
                     </p>
                 </section>
             </form>
-  
+
         </aside>
 
     </div>
@@ -439,6 +436,19 @@ if (isset($_GET['key']) && is_wc_endpoint_url('order-received')) {
                     }).appendTo($rightForm);
                 }
                 $hiddenPayment.val(payment);
+            }
+
+            // Copy shipping_speed
+            var ship = $('input[name="shipping_speed"]:checked').val();
+            if (ship) {
+                var $hiddenShip = $rightForm.find('input[name="shipping_speed"]');
+                if (!$hiddenShip.length) {
+                    $hiddenShip = $('<input>').attr({
+                        type: 'hidden',
+                        name: 'shipping_speed'
+                    }).appendTo($rightForm);
+                }
+                $hiddenShip.val(ship);
             }
 
             // Trigger WooCommerce checkout JS
