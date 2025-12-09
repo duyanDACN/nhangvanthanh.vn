@@ -1,0 +1,232 @@
+.material-icons-outlined {
+    font-size: inherit;
+}
+
+.product-short-description {
+    background: rgb(240 253 244 / var(--tw-bg-opacity, 1));
+    border: 1px solid rgb(229 231 235 / var(--tw-border-opacity, 1));
+}
+
+.csbh {
+    background: rgb(240 253 244 / var(--tw-bg-opacity, 1));
+}
+
+.product-thumbnails {
+    margin-top: 60px;
+}
+
+.product-images a img {
+    max-height: 639px;
+}
+
+.nhan-khuyen-mai {
+    height: 150px;
+}
+
+
+.product-tabs_detail {
+    max-height: 300px;
+    /* bạn chỉnh tùy ý */
+    overflow: hidden;
+    position: relative;
+    transition: max-height 0.4s ease;
+}
+
+/* Lớp mờ phía dưới */
+.product-tabs_detail::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    height: 60px;
+    background: linear-gradient(transparent, #fff);
+}
+
+/* Khi mở full */
+.product-tabs_detail.show-full {
+    max-height: 9999px;
+}
+
+.product-tabs_detail.show-full::after {
+    display: none;
+}
+
+body.dark .product-tabs_detail::after {
+    background: linear-gradient(transparent, #111827);
+}
+
+.inner__woo__pro {
+    box-shadow: none;
+    border: 1px solid rgb(229 231 235 / var(--tw-border-opacity, 1));
+}
+
+/* Form tư vấn */
+.cf7-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.6);
+    display: none;
+    align-items: center;
+    justify-content: center;
+    z-index: 9999;
+}
+
+.cf7-box {
+    background: #fff;
+    width: 90%;
+    max-width: 500px;
+    padding: 30px 20px;
+    border-radius: 16px;
+    position: relative;
+    animation: zoomIn .3s ease;
+    padding-bottom: 10px;
+}
+
+.close-cf7 {
+    position: absolute;
+    top: 10px;
+    right: 15px;
+    font-size: 22px;
+    cursor: pointer;
+}
+
+.support-policy {
+    background: rgb(240 253 244 / var(--tw-bg-opacity, 1));
+    padding: 0;
+    width: 270px;
+    font-family: sans-serif;
+    border: 1px solid #008000;
+    border-radius: 12px;
+}
+
+.support-policy h3 {
+    background: #008000;
+    color: #fff;
+    font-size: 16px;
+    padding: 12px 16px;
+    margin: 0;
+    width: 100%;
+    display: flex;
+    gap: 5px;
+    align-items: center;
+    border-top-right-radius: 12px;
+    border-top-left-radius: 12px;
+}
+
+.support-policy .policy-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 4px 16px;
+}
+
+.support-policy .policy-item:last-child {
+    border-bottom: 0;
+}
+
+.support-policy img {
+    width: 28px;
+    height: auto;
+}
+
+.row-chi-tiet {
+    max-width: 1350px !important;
+}
+
+
+.policy-item img {
+    width: 28px !important;
+}
+
+.policy-first {
+    padding-top: 10px !important;
+}
+
+.policy-item:last-child {
+    padding-bottom: 10px;
+}
+
+@keyframes zoomIn {
+    from {
+        transform: scale(.8);
+        opacity: 0
+    }
+
+    to {
+        transform: scale(1);
+        opacity: 1
+    }
+}
+
+.woocommerce-product-gallery__wrapper {
+    height: 500px;
+}
+
+@media (max-width: 1024px) {
+    .row-km {
+        display: flex !important;
+        justify-content: center;
+        align-items: center;
+        gap: 35px;
+        margin-bottom: 45px;
+    }
+
+    .support-policy {
+        width: 385px;
+    }
+
+    .nhan-khuyen-mai {
+        height: 200px;
+    }
+}
+
+@media (max-width: 768px) {
+    .container main {
+        padding: 0 10px;
+    }
+
+    .container {
+        padding-top: 0;
+    }
+
+    .product-thumbnails {
+        margin-top: 95px;
+    }
+
+    .product-tabs_detail .woocommerce-tabs {
+        padding: 0 10px;
+    }
+
+    .product-section {
+        padding: 10px;
+    }
+
+    .product-tabs_detail {
+        max-height: 200px;
+    }
+
+    #toggle-detail {
+        margin-top: 0px;
+    }
+
+    .product__col .box-text .product-title a {
+        font-size: 12px;
+    }
+
+    .row-km {
+        display: block !important;
+        margin-bottom: 25px;
+    }
+
+    .support-policy {
+        width: 100%;
+    }
+
+    .info-giao-hang {
+        margin-bottom: 0;
+    }
+
+
+
+}

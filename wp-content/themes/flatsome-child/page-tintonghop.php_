@@ -1,0 +1,167 @@
+<?php 
+get_header(); 
+ $url = get_stylesheet_directory_uri();
+ // var_dump($url);
+/**
+ * Template Name: Tin Tổng hợp
+ *
+ * @package WordPress
+ * 
+ * 
+ */
+?>
+	<section class="listnew-page full-section">
+		<div class="wrapp-header">
+			<div class="wrapp-menu">
+				
+			</div>
+		</div>
+		<ul class="bxknhtopn_faq">
+			<li>
+				<ul class="ulknh_1">
+					<?php  $args = array(
+				          'post_type' => 'post', 
+				          'showposts' => '4',
+				          'orderby' => 'ID',
+						  'order'   => 'DESC',
+				          ); 
+			          $news = new WP_Query($args); ?>
+				        <?php  if ($news->have_posts()) : ?>
+				        	<?php $stt=0;$stt1 =0; ?>
+				            <?php while ($news->have_posts()) : $news->the_post();?>
+				            	<?php $stt++; ?>
+				            	<?php if($stt == 1){ ?>
+							    <li>
+									<a href="<?php the_permalink() ?>" class="t_0" title="">
+										 <?php the_post_thumbnail('full', array( 'class' => 'img-responsive' ) ); ?>
+										<span></span>
+										<p>
+				                            <?php the_title() ?>
+				                        </p>
+									</a>
+								</li>
+								<li>
+								<?php }else{  $stt1++; ?>
+								
+									<a href="<?php the_permalink() ?>" class="t_<?php echo $stt1; ?>" title="">
+										<?php the_post_thumbnail('full', array( 'class' => 'img-responsive' ) ); ?>
+										<span></span>
+										<p> <?php the_title() ?></p>
+									</a>
+								
+								<?php } ?>
+				            <?php endwhile; ?>
+				            </li>
+			          <?php endif; wp_reset_query();?>
+				</ul>
+			</li>
+			<li>
+				<div class="faqhtop">
+					<a class="titlehtop" href="#">
+                        <i class="pknhico_hfaq"></i>
+                        Hỏi đáp
+                    </a>
+                    <?php 
+	                     $items = wp_get_nav_menu_items(349);
+	                     foreach ($items as $k => $v) {
+	                     	$category = get_category($items[$k]->object_id);
+	                         $link = $items[$k]->url;
+	                        echo '<a href="'.$link.'"> <b>'.$items[$k]->title.'</b> <label>('.$category->count.' câu hỏi)</label></a>';
+	                    }
+	                 ?>
+				</div>
+			</li>
+		</ul>
+		<ul class="bxknhcate_faq">
+			<?php 
+				$list_news_tall = get_field('select__cate');
+				// var_dump($list_news_tall);
+				if(!empty($list_news_tall)){
+					foreach ($list_news_tall as $key) {
+
+						$category_link = get_category_link( $key );
+
+
+			?>
+			<li>
+				<a class="tith" href="<?php echo $category_link; ?>"><?php echo get_cat_name($key); ?></a>
+				<a class="viewall" href="<?php echo $category_link; ?>">Xem tất cả</a>
+				<?php 
+					$argcat = array(
+						'post_type'	=> 'post',
+						'posts_per_page'	=> 5,
+						'orderby'	=> 'ID',
+						'order'		=> 'DESC',
+						'cat'       => $key
+					);
+					$qrpr = new WP_Query($argcat);
+				?>
+				<?php if ($qrpr->have_posts()): ?>
+					<?php $stt =0; ?>
+					<?php while($qrpr->have_posts()):$qrpr->the_post(); ?>
+						<?php $stt++; ?>
+						<?php if($stt == 1){ ?>
+						<a href="<?php the_permalink() ?>" class="a_<?php echo $stt; ?>">
+							<img src="<?php the_post_thumbnail_url( 'full' ) ?>">
+							<span></span>
+							<p><?php the_title() ?></p>
+						</a>
+						<?php }elseif($stt == 2){ ?>
+						<a href="<?php the_permalink() ?>" class="a_<?php echo $stt; ?>" title="<?php the_title() ?>">
+							<img src="<?php the_post_thumbnail_url( 'thumbnail' ) ?>">
+							<span>Mới nhất</span>
+							<b><?php the_title() ?></b>
+						</a>
+						<div class="divlnh">
+						<?php }else{ ?>
+						<a href="<?php the_permalink() ?>" title="<?php the_title() ?>">
+	                        <b>
+	                            <?php the_title() ?>
+	                        </b>
+	                    </a>
+						<?php } ?>
+					<?php endwhile; ?>
+				<?php endif; wp_reset_postdata(); ?>
+					</div>
+				</li>
+			<?php }} ?>
+		</ul>
+		<div class="bxknhvideo">
+			<?php $video_cat = get_field('select__video_cate'); ?>
+			<a class="btitl" href="<?php echo get_category_link( $video_cat); ?>"><?php echo get_cat_name($video_cat);?></a>
+			<div class="youtu">
+				<a class="morev" href="https://www.youtube.com/channel/UCFQmyJii6GRAocp6sZbSSyQ" target="_blank">Xem thêm video </a>
+			</div>
+			<ul class="knhlisvideo"> 
+				<?php 
+					$argcat = array(
+						'post_type'	=> 'post',
+						'posts_per_page'	=> 12,
+						'orderby'	=> 'ID',
+						'order'		=> 'DESC',
+						'cat'       => $video_cat
+					);
+					$qrpr = new WP_Query($argcat);
+				?>
+				<?php if ($qrpr->have_posts()): ?>
+					<?php $stt =0; ?>
+					<?php while($qrpr->have_posts()):$qrpr->the_post(); 
+						$link_video = get_field('link_video');
+						// var_dump($link_video);
+						?>
+						<?php $stt++; ?>
+				<li>
+					<a href="<?php echo $link_video; ?>" data-toggle="modal" data-target="#videoyoutube<?php echo $stt;?>" class="button open-video">
+						<img src="<?php the_post_thumbnail_url( 'full' ) ?>">
+						<span></span>
+						<p><?php the_title() ?></p>
+						<i class="pknhico_pvide"></i>
+					</a>
+				</li>
+				<?php endwhile; ?>
+				<?php endif; wp_reset_postdata(); ?>
+			</ul>
+		</div>
+	</section>
+
+<?php get_footer(); ?>

@@ -1,0 +1,30 @@
+{
+  "key": "group_product_gift",
+  "title": "Khuyến mãi",
+  "fields": [
+    {
+      "key": "field_money_min",
+      "label": "Số tiền tối thiểu",
+      "name": "money_min",
+      "type": "number",
+      "instructions": "VD: 150000"
+    },
+    {
+      "key": "field_product_gift",
+      "label": "Sản phẩm quà tặng",
+      "name": "product_gift",
+      "type": "post_object",
+      "post_type": ["product"],
+      "return_format": "id"
+    }
+  ],
+  "location": [
+    [
+      {
+        "param": "post_type",
+        "operator": "==",
+        "value": "product"
+      }
+    ]
+  ]
+}

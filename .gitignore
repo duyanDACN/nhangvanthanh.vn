@@ -1,0 +1,25 @@
+# Core WordPress
+wp-admin/
+wp-includes/
+
+# Uploads, cache, backup
+wp-content/uploads/
+wp-content/cache/
+wp-content/plugins/
+wp-content/upgrade/
+wp-content/backups/
+wp-content/languages/
+# Node / composer / IDE / OS
+node_modules/
+vendor/
+*.log
+*.env
+.DS_Store
+Thumbs.db
+*.zip
+*.sql
+
+error_log
+*.log
+
+wp-content/uploads/
