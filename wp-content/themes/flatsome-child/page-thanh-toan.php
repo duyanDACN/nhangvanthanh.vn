@@ -552,40 +552,37 @@ if (isset($_GET['key']) && is_wc_endpoint_url('order-received')) {
 
     //ajax update thông tin đặt hàng
     jQuery(function($) {
-
         $(document).on('click', '#btn-confirm-address', function() {
-
             let $btn = $(this);
-
             // loading UI
             $btn.prop('disabled', true).addClass('loading').html('Đang lưu...');
-
             let data = {
                 action: 'update_checkout_address'
             };
-
             $('#billing-popup :input').each(function() {
                 let name = $(this).attr('name');
                 if (name) {
                     data[name] = $(this).val();
                 }
             });
-
             $.post('<?php echo admin_url("admin-ajax.php"); ?>', data, function(res) {
-
+                // validate lỗi
+                if (res.data && res.data.validate_error) {
+                    showErrorToast(res.data.message);
+                    $('[name="' + res.data.field + '"]').focus();
+                    return; // STOP
+                }
                 if (res.success) {
-
                     showSuccessToast('Đã lưu & tạo tài khoản!');
-
                     setTimeout(function() {
                         location.reload();
                     }, 600);
-
                 } else {
                     showErrorToast('Có lỗi xảy ra!');
                 }
 
-            }).always(function() {
+            }, 'json').always(function() {
+
                 $btn.prop('disabled', false)
                     .removeClass('loading')
                     .html('Xác nhận thông tin');

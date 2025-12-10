@@ -1048,7 +1048,11 @@ function ajax_update_checkout_address()
         $name  = sanitize_text_field($_POST['billing_first_name']);
 
         if (!$email) {
-            wp_send_json_error('no_email');
+            wp_send_json_error([
+                'validate_error' => true,
+                'field' => 'billing_email',
+                'message' => 'Vui lòng nhập email'
+            ]);
         }
 
         if (email_exists($email)) {
