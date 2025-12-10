@@ -158,7 +158,7 @@ if (isset($_GET['key']) && is_wc_endpoint_url('order-received')) {
             </section>
 
             <!-- WooCommerce Checkout Form -->
-            <section class="card card-checkout-form">
+            <section class="card card-checkout-form" id="checkout-popup-content" style="display:none;">
                 <h2 class="checkout-title">Thông tin thanh toán</h2>
                 <form name="checkout" method="post" class="checkout woocommerce-checkout" action="<?php echo esc_url(wc_get_checkout_url()); ?>" id="custom-checkout-form">
                     <?php wp_nonce_field('woocommerce-process_checkout', 'woocommerce-process-checkout-nonce'); ?>
@@ -166,6 +166,11 @@ if (isset($_GET['key']) && is_wc_endpoint_url('order-received')) {
                     <div id="customer_details">
                         <div class="col-1"><?php do_action('woocommerce_checkout_billing'); ?></div>
                         <div class="col-2"><?php do_action('woocommerce_checkout_shipping'); ?></div>
+                    </div>
+                    <div class="text-center">
+                        <button type="button" id="btn-confirm-address" class="button alt">
+                            Xác nhận thông tin
+                        </button>
                     </div>
 
 
@@ -193,15 +198,15 @@ if (isset($_GET['key']) && is_wc_endpoint_url('order-received')) {
                             </div>
                             <?php
                             $user_id = get_current_user_id();
-                            $first_name = get_user_meta($user_id, 'billing_first_name', true);
-                            $last_name = get_user_meta($user_id, 'billing_last_name', true);
-                            $address1 = get_user_meta($user_id, 'billing_address_1', true);
-                            $address2 = get_user_meta($user_id, 'billing_address_2', true);
-                            $city = get_user_meta($user_id, 'billing_city', true);
-                            $state = get_user_meta($user_id, 'billing_state', true);
-                            $country = get_user_meta($user_id, 'billing_country', true);
+                            $first_name = get_user_meta($user_id, 'shipping_first_name', true);
+                            $last_name = get_user_meta($user_id, 'shipping_last_name', true);
+                            $address1 = get_user_meta($user_id, 'shipping_address_1', true);
+                            $address2 = get_user_meta($user_id, 'shipping_address_2', true);
+                            $city = get_user_meta($user_id, 'shipping_city', true);
+                            $state = get_user_meta($user_id, 'shipping_state', true);
+                            $country = get_user_meta($user_id, 'shipping_country', true);
                             $company = get_user_meta($user_id, 'shipping_company', true);
-                            $phone = get_user_meta($user_id, 'billing_phone', true);
+                            $phone = get_user_meta($user_id, 'shipping_phone', true);
                             $full_address = trim("$address1 $address2, $city, $state, $country");
                             ?>
                             <div class="address-body">
@@ -266,7 +271,7 @@ if (isset($_GET['key']) && is_wc_endpoint_url('order-received')) {
                     </p>
                 </section>
             </form>
-
+            <button type="button" id="open-billing-popup" class="button alt">Thông tin thanh toán</button>
         </aside>
 
     </div>
@@ -274,6 +279,15 @@ if (isset($_GET['key']) && is_wc_endpoint_url('order-received')) {
 
 <?php get_footer() ?>
 
+<!-- Popup thông tin thanh toán -->
+<div id="billing-popup" class="popup" style="display:none;">
+    <div class="popup-inner">
+        <span id="close-billing-popup" class="close-btn">✖</span>
+
+        <!-- Chèn toàn bộ form checkout đã ẩn -->
+        <div class="popup-body"></div>
+    </div>
+</div>
 
 
 <script>
@@ -499,6 +513,139 @@ if (isset($_GET['key']) && is_wc_endpoint_url('order-received')) {
                 'json'
             );
 
+        });
+
+    });
+</script>
+
+
+<script>
+    jQuery(function($) {
+
+        // mở popup
+        $('#open-billing-popup').on('click', function() {
+            var html = $('#checkout-popup-content').html()
+            $('#billing-popup .popup-body').html(html)
+            $('#billing-popup').fadeIn()
+        })
+
+        // đóng popup
+        $('#close-billing-popup').on('click', function() {
+            $('#billing-popup').fadeOut()
+        })
+    })
+
+    jQuery(function($) {
+
+        $(document).on('click', '#open-billing-popup', function() {
+            setTimeout(function() {
+                // trong DOM gốc
+                $('input[name="createaccount"]').prop('checked', true);
+
+                // trong popup sau khi clone
+                $('#billing-popup .popup-body').find('input[name="createaccount"]').prop('checked', true);
+            }, 400);
+        });
+
+    });
+
+
+    //ajax update thông tin đặt hàng
+    jQuery(function($) {
+
+        $(document).on('click', '#btn-confirm-address', function() {
+
+            let $btn = $(this);
+
+            // loading UI
+            $btn.prop('disabled', true).addClass('loading').html('Đang lưu...');
+
+            let data = {
+                action: 'update_checkout_address'
+            };
+
+            $('#billing-popup :input').each(function() {
+                let name = $(this).attr('name');
+                if (name) {
+                    data[name] = $(this).val();
+                }
+            });
+
+            $.post('<?php echo admin_url("admin-ajax.php"); ?>', data, function(res) {
+
+                if (res.success) {
+
+                    showSuccessToast('Đã lưu & tạo tài khoản!');
+
+                    setTimeout(function() {
+                        location.reload();
+                    }, 600);
+
+                } else {
+                    showErrorToast('Có lỗi xảy ra!');
+                }
+
+            }).always(function() {
+                $btn.prop('disabled', false)
+                    .removeClass('loading')
+                    .html('Xác nhận thông tin');
+            });
+        });
+
+    });
+
+
+    // fancy toast
+    function showSuccessToast(msg) {
+        jQuery('body').append(`
+        <div class="toast-success">${msg}</div>
+    `);
+        setTimeout(() => {
+            jQuery('.toast-success').fadeOut(400, function() {
+                jQuery(this).remove()
+            });
+        }, 1000);
+    }
+
+    function showErrorToast(msg) {
+        jQuery('body').append(`
+        <div class="toast-error">${msg}</div>
+    `);
+        setTimeout(() => {
+            jQuery('.toast-error').fadeOut(400, function() {
+                jQuery(this).remove()
+            });
+        }, 2000);
+    }
+
+
+    jQuery(function($) {
+        $(document.body).on('checkout_error', function() {
+            // mở popup
+            $('#open-billing-popup').trigger('click');
+
+            // cuộn lên đầu popup cho dễ xem
+            setTimeout(function() {
+                $('#billing-popup .popup-inner').animate({
+                    scrollTop: 0
+                }, 300);
+            }, 300);
+        });
+    });
+
+    // Tự đồng bộ thông tin sang bảng shipping_
+    jQuery(function($) {
+
+        // khi blur, change, keyup các ô billing
+        $(document).on('change keyup blur', '[name^="billing_"]', function() {
+
+            let billingName = $(this).attr('name');
+
+            // convert billing_ → shipping_
+            let shippingName = billingName.replace('billing_', 'shipping_');
+
+            // gán value qua shipping
+            $('[name="' + shippingName + '"]').val($(this).val());
         });
 
     });
