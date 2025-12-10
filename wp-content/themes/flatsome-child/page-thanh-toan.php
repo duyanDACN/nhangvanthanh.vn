@@ -271,7 +271,11 @@ if (isset($_GET['key']) && is_wc_endpoint_url('order-received')) {
                     </p>
                 </section>
             </form>
-            <button type="button" id="open-billing-popup" class="button alt">Thông tin thanh toán</button>
+            <?php if (! is_user_logged_in()) : ?>
+                <button type="button" id="open-billing-popup" class="button alt">
+                    Thông tin thanh toán
+                </button>
+            <?php endif; ?>
         </aside>
 
     </div>
