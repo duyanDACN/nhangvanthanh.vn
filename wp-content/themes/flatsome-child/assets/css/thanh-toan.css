@@ -809,6 +809,21 @@ th {
     opacity:.6;
 }
 /* popup thông tin thanh toán */
+.form-row button , #open-billing-popup {
+    border-radius: 8px;
+}
+#open-billing-popup {
+    width: 100%;
+    min-height: 45px;
+    font-size: 17px;
+    background: #a44f30;
+}
+#btn-confirm-address {
+    min-height: 45px;
+    margin-top: 15px;
+    border-radius: 4px;
+    padding: 0 35px;   
+}
 @media (max-width: 768px) {
     .checkout-container {
         padding: 10px 0;
